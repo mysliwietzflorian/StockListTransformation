@@ -1,0 +1,11 @@
+;1;Zusätzliche Beschläge;;;;;;;;;;;;;103 313 006;&Schach
+;;Pos. A;1000;618;2000;;;;;;;;;;;
+A1;1;M-Sockel;1000;100;19;H3325;;;;;AEi, 5;;;M-Sockel_5.dxf;;
+A1;1;M-Arbeitsplatte;1000;618;25;SP;FuBu;FuBu;.MAX0085, 1;.MAX0085, 1;;.MAX0085, 1;;M-Arbeitsplatte_14.dxf;;
+;;KO-Standard;1000;568;1875;;;;;;;;;;;
+A1;1;KO-Seite_Re;1875;560;19;MAX0085;;;ABS, 2;;;;;KO-Seite_Re_1.dxf;;
+A1;1;KO-Fach;550;472;19;MAX0085;;;;ABS, 1.5;;;;KO-Fach_10.dxf;;
+A1;1;Griff;320;32;27;&Schach;;;;;;;Griff;Griff_13.dxf;103.52.625;&Schach
+A1;1;FR-Tür_RH;1872;497;19;SP;.H3325;.Gz;UABS, 2;UABS, 2;UABS, 2;UABS, 2;;FR-Tur_RH_8.dxf;;
+;;Lade_Englischer zug;461;490;105;;;;;;;;;;;
+A2;1;Lade_Vorne;461;58;16;+MaFi;;;;;;;;Lade_Vorne_19.dxf;;
