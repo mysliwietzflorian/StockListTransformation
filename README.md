@@ -11,7 +11,7 @@ Basically, three files are used to transform the \*.csv:
 (executable)
 - STL.conf	&nbsp;&nbsp;&nbsp;&nbsp;
 (configuration file)
-- \*.csv	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+- \*.csv	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 (input file)
 
 Simply, execute STL.exe in the same folder as the other files and an output file will be generated.
@@ -26,7 +26,7 @@ This project is still in active development and features are currently limited.
 - [x] Add configuration file
 - [x] Add logic for file handling
 - [x] Add error handling and exceptions
-- [ ] Create attributed grammar in configuration file
+- [ ] Create attribute grammar in configuration file
 - [ ] Parse input file
 - [ ] Add semantic actions based on configuration rules
 - [ ] Use semantic actions to transform and write to output file
