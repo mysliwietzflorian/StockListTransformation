@@ -4,7 +4,7 @@
 #include <string>
 #include "applicationError.h"
 
-fileHandler *files = fileHandler::getInstance();
+extern fileHandler *files = fileHandler::getInstance();
 
 // ### public methods ###
 fileHandler *fileHandler::getInstance() {
@@ -68,11 +68,11 @@ void fileHandler::resetConfigFile() {
 fileHandler *fileHandler::instance = nullptr;
 
 fileHandler::fileHandler()
-: configFile {"STL.conf"} {
+: configFile {"SLT.conf"} {
 
 	// check if configuration file was found in folder
 	if (!configFile.is_open()) {
-		std::cout << "Fatal. Configuration file [STL.conf] not found." << std::endl;
+		std::cout << "Fatal. Configuration file [SLT.conf] not found." << std::endl;
 		errors->raiseError();
 		return;
 	}

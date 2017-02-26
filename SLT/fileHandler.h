@@ -38,7 +38,7 @@ private: // hidden constructor && destructor
 	fileHandler(fileHandler &&) = delete;
 
 private: // components
-	std::fstream configFile {"stl.conf"};
+	std::fstream configFile {"SLT.conf"};
 	std::fstream inFile {};
 	std::fstream outFile {};
 };

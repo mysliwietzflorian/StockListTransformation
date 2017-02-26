@@ -3,8 +3,6 @@
 
 #include <string>
 
-extern void atExitFunction(void);
-
 // singleton pattern: only one instance of this class can be created
 class applicationError final {
 public:
@@ -13,6 +11,9 @@ public:
 
 	// delete instance after usage
 	void deleteInstance();
+
+	// function gets called before error is raised or application is closed
+	static void atExitFunction(void);
 
 	// raise unspecific error that leads to abortion of program
 	// error message is provided by user; application gets stopped safely
