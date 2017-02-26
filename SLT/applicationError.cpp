@@ -3,8 +3,9 @@
 #include <iostream>
 #include <stdlib.h>
 #include "fileHandler.h"
+#include "parserHandler.h"
 
-applicationError *errors = applicationError::getInstance();
+extern applicationError *errors = applicationError::getInstance();
 
 // ### public methods ###
 applicationError *applicationError::getInstance() {
@@ -19,6 +20,13 @@ void applicationError::deleteInstance() {
 		// instance gets deleted
 		delete instance;
 	}
+}
+
+void applicationError::atExitFunction(void) {
+	files->deleteInstance();
+	errors->deleteInstance();
+	parser->deleteInstance();
+	system("pause");
 }
 
 void applicationError::raiseError() {
