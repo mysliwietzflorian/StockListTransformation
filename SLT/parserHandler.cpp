@@ -75,6 +75,10 @@ void parserHandler::fillRulesStruct() {
         line = files->getConfigLine();
     }
     files->resetConfigFile();
+
+    if (rules.get()->size() == 0) {
+        errors->raiseError("Fatal", "No semantic action rules were added in configuration file");
+    }
 }
 
 void parserHandler::findGrammarNames() {
@@ -93,6 +97,10 @@ void parserHandler::findGrammarNames() {
         line = files->getConfigLine();
     }
     files->resetConfigFile();
+
+    if (data.get()->size() == 0) {
+        errors->raiseError("Fatal", "No attribute grammar was added in configuration file");
+    }
 }
 
 // ### private low level methods ###
