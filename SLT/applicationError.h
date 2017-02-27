@@ -6,6 +6,8 @@
 // singleton pattern: only one instance of this class can be created
 class applicationError final {
 public:
+	virtual ~applicationError() = default;
+
 	// get instance with always same address
 	static applicationError *getInstance();
 
@@ -26,9 +28,8 @@ public:
 private: // hidden constructor && destructor
 	static applicationError *instance;
 
-	// default constructor and destructor
+	// default constructor
 	applicationError() = default;
-	virtual ~applicationError() = default;
 	// copy and move constructors are deleted
 	applicationError(const applicationError &) = delete;
 	applicationError(applicationError &&) = delete;

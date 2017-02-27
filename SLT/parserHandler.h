@@ -10,6 +10,8 @@
 // singleton pattern: only one instance of this class can be created
 class parserHandler final {
 public:
+	virtual ~parserHandler() = default;
+
 	// get instance with always same address
 	static parserHandler *getInstance();
 
@@ -26,18 +28,17 @@ private: // hidden constructor && destructor
 	static parserHandler *instance;
 
 	parserHandler();
-	virtual ~parserHandler() = default;
 	// copy and move constructors are deleted
 	parserHandler(const parserHandler &) = delete;
 	parserHandler(parserHandler &&) = delete;
 
     // ### private high level methods ###
-    // finds grammar names from configuration file
-    // initializes grammarTypes in parsingStruct
-    void findGrammarNames();
+	// fills rules with mnemonics from configuration file
+	void fillRulesStruct();
 
-    // fills rules with mnemonics from configuration file
-    void fillRulesStruct();
+	// finds grammar names from configuration file
+	// initializes grammarTypes in parsingStruct
+	void findGrammarNames();
 
     // ### private low level methods ###
     // get the attribute from a given configuration file line

@@ -59,24 +59,6 @@ parserHandler::parserHandler()
 }
 
 // ### private high level methods ###
-void parserHandler::findGrammarNames() {
-    files->resetConfigFile();
-    std::string line {files->getConfigLine()};
-
-    while (!line.empty()) {
-        if (line.find("[]") != -1) {
-
-            std::string attr = getAttributeFromConfigLine(line);
-            attr = attr.substr(0, attr.find("[]"));
-            std::string value = getValueFromConfigLine(line);
-
-            data.get()->push_back(attrGrammarType {attr, value});
-        }
-        line = files->getConfigLine();
-    }
-    files->resetConfigFile();
-}
-
 void parserHandler::fillRulesStruct() {
     files->resetConfigFile();
     std::string line {files->getConfigLine()};
@@ -89,6 +71,24 @@ void parserHandler::fillRulesStruct() {
             std::string mnemonic = getValueFromConfigLine(line);
 
             rules.get()->push_back(rulesType {name, mnemonic});
+        }
+        line = files->getConfigLine();
+    }
+    files->resetConfigFile();
+}
+
+void parserHandler::findGrammarNames() {
+    files->resetConfigFile();
+    std::string line {files->getConfigLine()};
+
+    while (!line.empty()) {
+        if (line.find("[]") != -1) {
+
+            std::string attr = getAttributeFromConfigLine(line);
+            attr = attr.substr(0, attr.find("[]"));
+            std::string value = getValueFromConfigLine(line);
+
+            data.get()->push_back(attrGrammarType {attr, value});
         }
         line = files->getConfigLine();
     }

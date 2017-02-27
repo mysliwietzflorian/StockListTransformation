@@ -7,6 +7,8 @@
 // singleton pattern: only one instance of this class can be created
 class fileHandler final {
 public:
+	virtual ~fileHandler();
+
 	// get instance with always same address
 	static fileHandler *getInstance();
 
@@ -32,7 +34,6 @@ private: // hidden constructor && destructor
 	static fileHandler *instance;
 
 	fileHandler();
-	virtual ~fileHandler();
 	// copy and move constructors are deleted
 	fileHandler(const fileHandler &) = delete;
 	fileHandler(fileHandler &&) = delete;
