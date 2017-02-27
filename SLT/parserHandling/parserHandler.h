@@ -4,8 +4,8 @@
 #include <memory>
 #include <string>
 #include <vector>
-#include "attributeGrammar.h"
-#include "parsingStruct.h"
+#include "./attributeGrammar.h"
+#include "./parsingStruct.h"
 
 // singleton pattern: only one instance of this class can be created
 class parserHandler final {

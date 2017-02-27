@@ -6,8 +6,8 @@
 
 #include <iostream>
 
-#include "parserHandler.h"
-#include "applicationError.h"
+#include "./parserHandling/parserHandler.h"
+#include "./errorHandling/applicationError.h"
 
 int main() {
 

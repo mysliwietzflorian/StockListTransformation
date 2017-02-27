@@ -4,7 +4,7 @@
 #include <memory>
 #include <string>
 #include <vector>
-#include "attributeGrammar.h"
+#include "./attributeGrammar.h"
 
 // typedefs for parsingStruct
 typedef std::shared_ptr<attributeGrammar> attrGrammarPtr;

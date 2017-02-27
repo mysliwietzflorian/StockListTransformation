@@ -1,11 +1,11 @@
-#include "parserHandler.h"
+#include "./parserHandler.h"
 
 #include <memory>
 #include <string>
 #include <vector>
 #include <iostream>
-#include "fileHandler.h"
-#include "applicationError.h"
+#include "../fileHandling/fileHandler.h"
+#include "../errorHandling/applicationError.h"
 
 extern parserHandler *parser = parserHandler::getInstance();
 
