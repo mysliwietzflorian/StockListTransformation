@@ -5,15 +5,7 @@
 #include <string>
 #include <vector>
 #include "attributeGrammar.h"
-
-// typedefs for parsingStruct
-typedef std::shared_ptr<attributeGrammar> attrGrammarPtr;
-typedef std::vector<attrGrammarPtr> attrGrammarPtrVec;
-typedef struct attrGrammarType {
-    std::string type {"<no_type>"};
-    std::shared_ptr<attrGrammarPtrVec> grammar {nullptr};
-} attrGrammarType;
-typedef std::vector<attrGrammarType> parsingStruct;
+#include "parsingStruct.h"
 
 // singleton pattern: only one instance of this class can be created
 class parserHandler final {
@@ -39,8 +31,27 @@ private: // hidden constructor && destructor
 	parserHandler(const parserHandler &) = delete;
 	parserHandler(parserHandler &&) = delete;
 
+    // ### private high level methods ###
+    // finds grammar names from configuration file
+    // initializes grammarTypes in parsingStruct
+    void findGrammarNames();
+
+    // fills rules with mnemonics from configuration file
+    void fillRulesStruct();
+
+    // ### private low level methods ###
+    // get the attribute from a given configuration file line
+    std::string getAttributeFromConfigLine(std::string line);
+
+    // get the value(s) from a given configuration file line
+    std::string getValueFromConfigLine(std::string line);
+
+    // get corresponding mnemonic to name from rulesStruct
+    std::string getMnemonicFromRulesStruct(std::string name);
+
 private: // components
-	std::shared_ptr<parsingStruct> data {nullptr};
+	std::shared_ptr<parsingStruct> data {new parsingStruct};
+    std::shared_ptr<rulesStruct> rules {new rulesStruct};
 };
 
 extern parserHandler *parser;

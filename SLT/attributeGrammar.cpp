@@ -14,7 +14,7 @@ attributeGrammar::attributeGrammar(std::string name, std::string id, int offset,
 , length {length}
 , mode {mode}
 , label {label}
-, rules {nullptr} {}
+, rules {new stringVec} {}
 
 std::string attributeGrammar::getName() {
     return name;
@@ -40,13 +40,8 @@ std::string attributeGrammar::getLabel() {
     return label;
 }
 
-std::shared_ptr<stringVec> attributeGrammar::getRules() {
-    return rules;
-}
-
-
-void attributeGrammar::setRules(std::shared_ptr<stringVec> rules) {
-    this->rules = rules;
+stringVec attributeGrammar::getRules() {
+    return *(rules.get());
 }
 
 void attributeGrammar::print() {
@@ -58,9 +53,7 @@ void attributeGrammar::print() {
     std::cout << "label:  " << label << std::endl;
     std::cout << "rules:  " << std::endl;
 
-    if (rules != nullptr) {
-        for (auto it : *rules) {
-            std::cout << "	" + it << std::endl;
-        }
+    for (auto it : *rules) {
+        std::cout << "	" + it << std::endl;
     }
 }

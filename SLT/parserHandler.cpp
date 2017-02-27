@@ -1,7 +1,11 @@
 #include "parserHandler.h"
 
+#include <memory>
+#include <string>
+#include <vector>
 #include <iostream>
 #include "fileHandler.h"
+#include "applicationError.h"
 
 extern parserHandler *parser = parserHandler::getInstance();
 
@@ -47,6 +51,69 @@ void parserHandler::parseInputFile() {
 parserHandler *parserHandler::instance = nullptr;
 
 parserHandler::parserHandler()
-: data {nullptr} {
+: data {new parsingStruct}
+, rules {new rulesStruct} {
 
+    fillRulesStruct();
+    findGrammarNames();
+}
+
+// ### private high level methods ###
+void parserHandler::findGrammarNames() {
+    files->resetConfigFile();
+    std::string line {files->getConfigLine()};
+
+    while (!line.empty()) {
+        if (line.find("[]") != -1) {
+
+            std::string attr = getAttributeFromConfigLine(line);
+            attr = attr.substr(0, attr.find("[]"));
+            std::string value = getValueFromConfigLine(line);
+
+            data.get()->push_back(attrGrammarType {attr, value});
+        }
+        line = files->getConfigLine();
+    }
+    files->resetConfigFile();
+}
+
+void parserHandler::fillRulesStruct() {
+    files->resetConfigFile();
+    std::string line {files->getConfigLine()};
+
+    while (!line.empty()) {
+        if (line.find("rule") == 0) {
+
+            std::string name = getAttributeFromConfigLine(line);
+            name = name.substr(name.find('[') + 1, name.find(']') - name.find('[') - 1);
+            std::string mnemonic = getValueFromConfigLine(line);
+
+            rules.get()->push_back(rulesType {name, mnemonic});
+        }
+        line = files->getConfigLine();
+    }
+    files->resetConfigFile();
+}
+
+// ### private low level methods ###
+std::string parserHandler::getAttributeFromConfigLine(std::string line) {
+    line = line.substr(0, line.find("="));
+    line = line.substr(0, line.find_first_of(' '));
+    return line;
+}
+
+std::string parserHandler::getValueFromConfigLine(std::string line) {
+    line = line.substr(line.find('=') + 1, line.find(';') - line.find('=') - 1);
+    line = line.substr(line.find_first_not_of(' '));
+    return line;
+}
+
+std::string parserHandler::getMnemonicFromRulesStruct(std::string name) {
+    for (auto it : *(rules.get())) {
+        if (it.getName() == name) {
+            return it.getMnemonic();
+        }
+    }
+    errors->raiseError("Warning", "Rule with name [" + name + "] in configuration file not found. Mnemonic could not be returned");
+    return "";
 }

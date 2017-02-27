@@ -24,9 +24,7 @@ public:
     int getLength();
     char getMode();
     std::string getLabel();
-    std::shared_ptr<stringVec> getRules();
-
-    void setRules(std::shared_ptr<stringVec> rules);
+    stringVec getRules();
 
     // temporary method to print components of class
     void print();
@@ -38,7 +36,7 @@ private:
     int length {0};
     char mode {'A'};
     std::string label {"<no_label>"};
-    std::shared_ptr<stringVec> rules {nullptr};
+    std::shared_ptr<stringVec> rules {new stringVec};
 };
 
 #endif
