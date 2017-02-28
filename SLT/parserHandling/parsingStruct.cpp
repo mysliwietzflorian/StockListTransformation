@@ -18,14 +18,18 @@ std::string attrGrammarType::getType() {
     return type;
 }
 
-attrGrammarPtrVec attrGrammarType::getGrammar() {
-    return *(grammar.get());
+std::shared_ptr<attrGrammarPtrVec> attrGrammarType::getGrammar() {
+    return grammar;
 }
 
 void attrGrammarType::print() {
     std::cout << "name:    " << name << std::endl;
     std::cout << "type:    " << type << std::endl;
-    std::cout << "grammar: " << grammar << std::endl;
+    std::cout << "grammar: " << std::endl;
+
+	for (auto it : *(grammar.get())) {
+		it.get()->print();
+    }
 }
 
 // ### public methods ###

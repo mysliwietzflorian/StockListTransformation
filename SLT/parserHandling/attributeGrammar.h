@@ -13,7 +13,7 @@ public:
     attributeGrammar(std::string name, std::string id, int offset,
         int length, char mode, std::string label);
     virtual ~attributeGrammar() = default;
-    // copy and move constructors are deleted
+    // delete copy and move constructors
     attributeGrammar(const attributeGrammar &) = delete;
     attributeGrammar(attributeGrammar &&) = delete;
 
@@ -24,7 +24,7 @@ public:
     int getLength();
     char getMode();
     std::string getLabel();
-    stringVec getRules();
+    std::shared_ptr<stringVec> getRules();
 
     // temporary method to print components of class
     void print();

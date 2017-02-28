@@ -6,6 +6,7 @@
 #include <iostream>
 #include "../fileHandling/fileHandler.h"
 #include "../errorHandling/applicationError.h"
+#include "./attributeGrammar.h"
 
 extern parserHandler *parser = parserHandler::getInstance();
 
@@ -24,9 +25,6 @@ void parserHandler::deleteInstance() {
 }
 
 void parserHandler::headerRequest() {
-    std::cout << "StockListTransformation [Version 17w08b]" << std::endl;
-    std::cout << "(c) 2017 Mysliwietz Florian. Alle Rechte vorbehalten." << std::endl << std::endl;
-
     if (files->getConfigLine("printHeader") != "true") {
         return;
     }
@@ -44,7 +42,10 @@ void parserHandler::headerRequest() {
 }
 
 void parserHandler::parseInputFile() {
-    std::cout << "log: parseInputFile()" << std::endl;
+    for (auto it : *(data.get())) {
+        it.print();
+		std::cout << std::endl;
+    }
 }
 
 // ### private methods
@@ -54,8 +55,15 @@ parserHandler::parserHandler()
 : data {new parsingStruct}
 , rules {new rulesStruct} {
 
+    std::cout << "StockListTransformation [Version 17w08b]" << std::endl;
+    std::cout << "(c) 2017 Mysliwietz Florian. Alle Rechte vorbehalten." << std::endl << std::endl;
+
     fillRulesStruct();
     findGrammarNames();
+    fillParsingStruct();
+
+    // TODO: control sizes of attrGrammarPtrVec
+    // TODO: reorder elements in data and rules
 }
 
 // ### private high level methods ###
@@ -87,12 +95,15 @@ void parserHandler::findGrammarNames() {
 
     while (!line.empty()) {
         if (line.find("[]") != -1) {
-
             std::string attr = getAttributeFromConfigLine(line);
             attr = attr.substr(0, attr.find("[]"));
             std::string value = getValueFromConfigLine(line);
 
-            data.get()->push_back(attrGrammarType {attr, value});
+            if (value == "recurring" || value == "nonrecurring") {
+                data.get()->push_back(attrGrammarType {attr, value});
+            } else {
+                errors->raiseError("Fatal", "Only \"recurring\" and \"nonrecurring\" is possible as value [" + line + "]");
+            }
         }
         line = files->getConfigLine();
     }
@@ -101,6 +112,23 @@ void parserHandler::findGrammarNames() {
     if (data.get()->size() == 0) {
         errors->raiseError("Fatal", "No attribute grammar was added in configuration file");
     }
+}
+
+void parserHandler::fillParsingStruct() {
+    files->resetConfigFile();
+	std::string line {files->getConfigLine() };
+
+    while(!line.empty()) {
+		std::string attr {getAttributeFromConfigLine(line)};
+        std::string value {getValueFromConfigLine(line)};
+
+        if (attr.find('[') != -1 && value.front() == '{') {
+            std::shared_ptr<attrGrammarPtrVec> grammar = getGrammarFromTypeName(attr);
+            grammar.get()->push_back(getAttrGrammarPtr(line));
+        }
+        line = files->getConfigLine();
+    }
+    files->resetConfigFile();
 }
 
 // ### private low level methods ###
@@ -116,6 +144,67 @@ std::string parserHandler::getValueFromConfigLine(std::string line) {
     return line;
 }
 
+std::string parserHandler::getElementFromValue(std::string &value) {
+    std::string element = "";
+
+    // return if value is empty
+    if (value.empty() || (value.find("{}") == 0 && value.size() == 2)) {
+        return element;
+    }
+
+    // raise error if no closing curly bracket is set in configuration file
+    if (value.back() != '}') {
+		errors->raiseError("Fatal", "Value [" + value + "] in configuration file is not closed with curly brackets '}'");
+	}
+
+    // erase empty square brackets from value
+	if (value.find("[]") != -1) {
+        value = value.erase(value.find("[]"), 2);
+    }
+
+    // erase leading spaces after open curly bracket
+    value = value.erase(1, value.find_first_not_of(' ', 1) - 1);
+
+    // find out whether second character is begin of rules or not
+	int pos = 0;
+	(value.find('[') != 1) ? (pos = 1) : (pos = 2);
+
+    if (value.find(',') != -1) {
+        // get single element from value
+        element = value.substr(pos, value.find(',') - pos);
+        element = element.erase(0, element.find_first_not_of(' '));
+        element = element.erase(element.find_last_not_of(' ') + 1);
+
+        // delete first element in value
+        value = value.erase(pos, value.find(',') - pos + 1);
+        value = value.erase(pos, value.find_first_not_of(' ', pos) - pos);
+    } else {
+        // get last and only element from value
+        element = value.substr(pos, value.find('}') - pos);
+        element = element.erase(0, element.find_first_not_of(' '));
+
+        if (pos == 2) {
+            element = element.erase(element.find(']'));
+            element = element.erase(element.find_last_not_of(' ') + 1);
+        }
+
+        // delete last and only element in value
+        if (pos == 1) {
+            value = value.erase(pos, value.find('}') - pos);
+        } else if (pos == 2) {
+            value = value.erase(pos, value.find(']') - pos);
+            value = value.erase(value.find(']') + 1, value.find('}') - value.find(']') - 1);
+        }
+    }
+
+    // erase empty square brackets from value
+	if (value.find("[]") != -1) {
+        value = value.erase(value.find("[]"), 2);
+    }
+
+    return element;
+}
+
 std::string parserHandler::getMnemonicFromRulesStruct(std::string name) {
     for (auto it : *(rules.get())) {
         if (it.getName() == name) {
@@ -124,4 +213,86 @@ std::string parserHandler::getMnemonicFromRulesStruct(std::string name) {
     }
     errors->raiseError("Warning", "Rule with name [" + name + "] in configuration file not found. Mnemonic could not be returned");
     return "";
+}
+
+std::shared_ptr<attrGrammarPtrVec> parserHandler::getGrammarFromTypeName(std::string attr) {
+    attr = attr.substr(0, attr.find('['));
+
+    for (auto it : *(data.get())) {
+        if (it.getName() == attr) {
+            return it.getGrammar();
+        }
+    }
+    errors->raiseError("Fatal", "Attribute grammar with name [" + attr + "] in configuration file not found. Grammar could not be returned");
+	return std::make_shared<attrGrammarPtrVec>();
+}
+
+attrGrammarPtr parserHandler::getAttrGrammarPtr(std::string line) {
+    std::string name {""};
+	std::string id {""};
+	int offset {0};
+    int length {0};
+    char mode {' '};
+    std::string label {""};
+
+    name = getAttributeFromConfigLine(line);
+    name = name.substr(0, name.find('['));
+
+	id = getAttributeFromConfigLine(line);
+    id = id.substr(id.find('[') + 1, id.find(']') - id.find('[') - 1);
+
+    std::string value = getValueFromConfigLine(line);
+
+	if (value.find("{}") != 0 && value.size() != 0) {
+        offset = stringToInt(getElementFromValue(value));
+    } else {
+        errors->raiseError("Fatal", "Wrong number of arguments in line [" + line + "] from configuration file");
+    }
+
+    if (value.find("{}") != 0 && value.size() != 0) {
+        length = stringToInt(getElementFromValue(value));
+    } else {
+        errors->raiseError("Fatal", "Wrong number of arguments in line [" + line + "] from configuration file");
+    }
+
+    if (value.find("{}") != 0 && value.size() != 0) {
+        mode = getElementFromValue(value).at(0);
+        if (mode != 'A' && mode != 'N') {
+            errors->raiseError("Fatal", "In configuration file [" + line +"] argument mode [" + mode + "] has to be 'A' or 'N'");
+        }
+    } else {
+        errors->raiseError("Fatal", "Wrong number of arguments in line [" + line + "] from configuration file");
+    }
+
+    if (value.find("{}") != 0 && value.size() != 0) {
+        label = getElementFromValue(value);
+    } else {
+        errors->raiseError("Fatal", "Wrong number of arguments in line [" + line + "] from configuration file");
+    }
+
+    auto attrGr = std::make_shared<attributeGrammar>(name, id, offset, length, mode, label);
+    auto attrGrRules = attrGr.get()->getRules();
+
+    while (value.find("{}") != 0 && value.size() != 0) {
+        attrGrRules.get()->push_back(getElementFromValue(value));
+    }
+
+    if (attrGrRules.get()->size() == 0) {
+        errors->raiseError("Fatal", "No rules are defined in " + name + "[" + id + "] from configuration file");
+    }
+
+	return attrGr;
+}
+
+int parserHandler::stringToInt(std::string str) {
+	int result = 0;
+    for (auto it : str) {
+		if (it >= '0' && it <= '9') {
+			result = result * 10 + (it - '0');
+		}
+		else {
+			errors->raiseError("Fatal", "String [" + str + "] cannot be transformed to integer value");
+		}
+    }
+	return result;
 }

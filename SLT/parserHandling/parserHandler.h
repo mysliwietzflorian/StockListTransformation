@@ -28,17 +28,20 @@ private: // hidden constructor && destructor
 	static parserHandler *instance;
 
 	parserHandler();
-	// copy and move constructors are deleted
+	// delete copy and move constructors
 	parserHandler(const parserHandler &) = delete;
 	parserHandler(parserHandler &&) = delete;
 
     // ### private high level methods ###
-	// fills rules with mnemonics from configuration file
+	// fill rules with mnemonics from configuration file
 	void fillRulesStruct();
 
-	// finds grammar names from configuration file
-	// initializes grammarTypes in parsingStruct
+	// find grammar names from configuration file
+	// initialize grammarTypes in parsingStruct
 	void findGrammarNames();
+
+	// tranverse configuration file and fill grammarTypes with attributeGrammar
+	void fillParsingStruct();
 
     // ### private low level methods ###
     // get the attribute from a given configuration file line
@@ -47,8 +50,22 @@ private: // hidden constructor && destructor
     // get the value(s) from a given configuration file line
     std::string getValueFromConfigLine(std::string line);
 
+	// return first element of a configuration file value
+	// erase that element from value
+	std::string getElementFromValue(std::string &value);
+
     // get corresponding mnemonic to name from rulesStruct
     std::string getMnemonicFromRulesStruct(std::string name);
+
+	// get attrGrammarPtrVec in attrGrammarType from attribute
+	std::shared_ptr<attrGrammarPtrVec> getGrammarFromTypeName(std::string attr);
+
+	// parse line and construct an object of attributeGrammar
+	// make that object to shared_ptr and return result
+	attrGrammarPtr getAttrGrammarPtr(std::string line);
+
+	// convert string to integer and check for errors
+	int stringToInt(std::string str);
 
 private: // components
 	std::shared_ptr<parsingStruct> data {new parsingStruct};

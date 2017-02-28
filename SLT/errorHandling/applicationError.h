@@ -14,7 +14,7 @@ public:
 	// delete instance after usage
 	void deleteInstance();
 
-	// function gets called before error is raised or application is closed
+	// call function before error is raised or application is closed
 	static void atExitFunction(void);
 
 	// raise unspecific error that leads to abortion of program

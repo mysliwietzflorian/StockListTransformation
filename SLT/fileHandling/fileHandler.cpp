@@ -16,7 +16,7 @@ fileHandler *fileHandler::getInstance() {
 
 void fileHandler::deleteInstance() {
 	if (instance != nullptr) {
-		// instance gets deleted and files are closed
+		// delete instance and close files
 		delete instance;
 	}
 }

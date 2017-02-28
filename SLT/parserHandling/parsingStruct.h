@@ -18,7 +18,7 @@ public:
     //getter methods
     std::string getName();
     std::string getType();
-    attrGrammarPtrVec getGrammar();
+    std::shared_ptr<attrGrammarPtrVec> getGrammar();
 
     // temporary method to print components of class
     void print();

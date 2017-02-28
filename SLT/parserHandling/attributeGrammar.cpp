@@ -40,20 +40,25 @@ std::string attributeGrammar::getLabel() {
     return label;
 }
 
-stringVec attributeGrammar::getRules() {
-    return *(rules.get());
+std::shared_ptr<stringVec> attributeGrammar::getRules() {
+    return rules;
 }
 
 void attributeGrammar::print() {
-    std::cout << "name:   " << name << std::endl;
-    std::cout << "id:     " << id << std::endl;
-    std::cout << "offset: " << offset << std::endl;
-    std::cout << "length: " << length << std::endl;
-    std::cout << "mode:   " << mode << std::endl;
-    std::cout << "label:  " << label << std::endl;
-    std::cout << "rules:  " << std::endl;
+	std::cout << '{' << name << ", ";
+	std::cout << id << ", ";
+	std::cout << offset << ", ";
+	std::cout << length << ", ";
+	std::cout << mode << ", ";
+	std::cout << label << ", [";
 
-    for (auto it : *rules) {
-        std::cout << "	" + it << std::endl;
+    for (auto it : *(rules.get())) {
+		if (it != rules.get()->back()) {
+			std::cout << it << ", ";
+		}
+		else {
+			std::cout << it;
+		}
     }
+    std::cout << "]};" << std::endl;
 }
