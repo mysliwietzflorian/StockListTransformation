@@ -1,8 +1,8 @@
-#include "fileHandler.h"
+#include "./fileHandler.h"
 
 #include <iostream>
 #include <string>
-#include "applicationError.h"
+#include "../errorHandling/applicationError.h"
 
 extern fileHandler *files = fileHandler::getInstance();
 
@@ -16,7 +16,7 @@ fileHandler *fileHandler::getInstance() {
 
 void fileHandler::deleteInstance() {
 	if (instance != nullptr) {
-		// instance gets deleted and files are closed
+		// delete instance and close files
 		delete instance;
 	}
 }

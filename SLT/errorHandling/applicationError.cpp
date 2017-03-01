@@ -1,9 +1,9 @@
-#include "applicationError.h"
+#include "./applicationError.h"
 
 #include <iostream>
 #include <stdlib.h>
-#include "fileHandler.h"
-#include "parserHandler.h"
+#include "../fileHandling/fileHandler.h"
+#include "../parserHandling/parserHandler.h"
 
 extern applicationError *errors = applicationError::getInstance();
 

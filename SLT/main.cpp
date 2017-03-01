@@ -1,4 +1,4 @@
-/* SLT [Version 17w08b]
+/* SLT [Version 17w09a]
  * (c) 2017 Mysliwietz Florian. All rights reserved.
  *
  * StockListTransformation Application
@@ -6,8 +6,8 @@
 
 #include <iostream>
 
-#include "parserHandler.h"
-#include "applicationError.h"
+#include "./parserHandling/parserHandler.h"
+#include "./errorHandling/applicationError.h"
 
 int main() {
 
