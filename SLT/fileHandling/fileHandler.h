@@ -34,7 +34,7 @@ private: // hidden constructor && destructor
 	static fileHandler *instance;
 
 	fileHandler();
-	// copy and move constructors are deleted
+	// delete copy and move constructors
 	fileHandler(const fileHandler &) = delete;
 	fileHandler(fileHandler &&) = delete;
 

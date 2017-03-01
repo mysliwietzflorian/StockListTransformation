@@ -30,7 +30,7 @@ private: // hidden constructor && destructor
 
 	// default constructor
 	applicationError() = default;
-	// copy and move constructors are deleted
+	// delete copy and move constructors
 	applicationError(const applicationError &) = delete;
 	applicationError(applicationError &&) = delete;
 };

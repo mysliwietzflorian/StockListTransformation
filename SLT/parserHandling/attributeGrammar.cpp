@@ -7,7 +7,7 @@
 
 // ### public methods ###
 attributeGrammar::attributeGrammar(std::string name, std::string id, int offset,
-    int length, char mode, std::string label)
+	int length, char mode, std::string label)
 : name {name}
 , id {id}
 , offset {offset}
@@ -17,48 +17,47 @@ attributeGrammar::attributeGrammar(std::string name, std::string id, int offset,
 , rules {new stringVec} {}
 
 std::string attributeGrammar::getName() {
-    return name;
+	return name;
 }
 
 std::string attributeGrammar::getId() {
-    return id;
+	return id;
 }
 
 int attributeGrammar::getOffset() {
-    return offset;
+	return offset;
 }
 
 int attributeGrammar::getLength() {
-    return length;
+	return length;
 }
 
 char attributeGrammar::getMode() {
-    return mode;
+	return mode;
 }
 
 std::string attributeGrammar::getLabel() {
-    return label;
+	return label;
 }
 
 std::shared_ptr<stringVec> attributeGrammar::getRules() {
-    return rules;
+	return rules;
 }
 
 void attributeGrammar::print() {
-	std::cout << '{' << name << ", ";
-	std::cout << id << ", ";
+	std::cout << name << "[" << id << "] = {";
 	std::cout << offset << ", ";
 	std::cout << length << ", ";
 	std::cout << mode << ", ";
 	std::cout << label << ", [";
 
-    for (auto it : *(rules.get())) {
+	for (auto it : *(rules.get())) {
 		if (it != rules.get()->back()) {
 			std::cout << it << ", ";
 		}
 		else {
 			std::cout << it;
 		}
-    }
-    std::cout << "]};" << std::endl;
+	}
+	std::cout << "]};" << std::endl;
 }

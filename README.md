@@ -4,6 +4,10 @@
 A stocklist in \*.csv file format from PYTHA is transformed to a different user-defined-format to fit a program from
 [MOSER PROGRAMME](https://www.optmos.at/).
 
+## Documentation
+The full documentation - only available in German - can be found
+[here](https://github.com/mysliwietzflorian/StockListTransformation/).
+
 ## Usage ##
 Basically, three files are used to transform the \*.csv:
 
@@ -22,15 +26,13 @@ In case of a fatal error or warning - depending on the configuration - the trans
 This project is still in active development and features are currently limited.
 
 ### Planned and in-dev Features ###
-
-- [x] Add configuration file
-- [x] Add logic for file handling
-- [x] Add error handling and exceptions
-- [x] Create attribute grammar in configuration file
+- [x] Read user-defined attribute grammar from configuration file
+- [x] Read user-defined semantic rules from configuration file
+- [ ] Implement semantic actions based on configuration rules
 - [ ] Write defined header to output file
 - [ ] Parse input file
-- [ ] Add semantic actions based on configuration rules
 - [ ] Use semantic actions to transform and write to output file
+- [ ] Modify program that in- and output files can be in separate directories
 
 The current codebase can be found on
 [GitHub](https://github.com/mysliwietzflorian/StockListTransformation).

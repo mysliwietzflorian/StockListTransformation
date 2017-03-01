@@ -1,4 +1,4 @@
-/* SLT [Version 17w08b]
+/* SLT [Version 17w09a]
  * (c) 2017 Mysliwietz Florian. All rights reserved.
  *
  * StockListTransformation Application
