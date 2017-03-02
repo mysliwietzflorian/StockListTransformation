@@ -24,6 +24,19 @@ public:
 	// parse input file, execute rules and write to output file
 	void parseInputFile();
 
+	// ## public low level methods
+	// get the attribute from a given configuration file line
+	std::string getAttributeFromConfigLine(std::string line);
+
+	// get the value(s) from a given configuration file line
+	std::string getValueFromConfigLine(std::string line);
+
+	// get corresponding mnemonic to name from rulesStruct
+	std::string getMnemonicFromRulesStruct(std::string name);
+
+	// convert string to integer and check for errors
+	int stringToInt(std::string str);
+
 private: // hidden constructor && destructor
 	static parserHandler *instance;
 
@@ -47,18 +60,9 @@ private: // hidden constructor && destructor
 	void controlSizes();
 
 	// ### private low level methods ###
-	// get the attribute from a given configuration file line
-	std::string getAttributeFromConfigLine(std::string line);
-
-	// get the value(s) from a given configuration file line
-	std::string getValueFromConfigLine(std::string line);
-
 	// return first element of a configuration file value
 	// erase that element from value
 	std::string getElementFromValue(std::string &value);
-
-	// get corresponding mnemonic to name from rulesStruct
-	std::string getMnemonicFromRulesStruct(std::string name);
 
 	// get attrGrammarPtrVec in attrGrammarType from attribute
 	std::shared_ptr<attrGrammarPtrVec> getGrammarFromTypeName(std::string attr);
@@ -66,9 +70,6 @@ private: // hidden constructor && destructor
 	// parse line and construct an object of attributeGrammar
 	// make that object to shared_ptr and return result
 	attrGrammarPtr getAttrGrammarPtr(std::string line);
-
-	// convert string to integer and check for errors
-	int stringToInt(std::string str);
 
 private: // components
 	std::shared_ptr<parsingStruct> data {std::make_shared<parsingStruct>()};

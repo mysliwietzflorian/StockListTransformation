@@ -4,9 +4,10 @@
 #include <string>
 #include <vector>
 #include <iostream>
-#include "../fileHandling/fileHandler.h"
-#include "../errorHandling/applicationError.h"
 #include "./attributeGrammar.h"
+#include "../errorHandling/applicationError.h"
+#include "../fileHandling/fileHandler.h"
+#include "../semanticActionHandling/semanticActionHandler.h"
 
 extern parserHandler *parser = parserHandler::getInstance();
 
@@ -29,23 +30,58 @@ void parserHandler::headerRequest() {
 		return;
 	}
 
-	std::string auftragName {"<Auftragsname>"};
-	std::string objektName {"<Objektname>"};
-	std::string auftragNr {"<Auftrags-Nr.>"};
-	std::cout << " === Daten fuer Auftragskopf === " << std::endl;
-	std::cout << " Auftragsname: ";
-	std::cin >> auftragName;
-	std::cout << " Objektname: ";
-	std::cin >> objektName;
-	std::cout << " Auftrags-Nr.: ";
-	std::cin >> auftragNr;
+	for (auto it1 : *(data.get())) {
+		if (it1.getType() == "nonrecurring") {
+
+			std::string element {""};
+			for (auto it2 : *(it1.getGrammar().get())) {
+				std::cout << it2->getLabel() << ": ";
+				std::getline(std::cin, element);
+				semanticAction::executeRules(it2, element);
+				// it2->executeRules(element);
+			}
+		}
+	}
 }
 
 void parserHandler::parseInputFile() {
-	for (auto it : *(data.get())) {
-		it.print();
-		std::cout << std::endl;
+
+}
+
+// ## public low level methods
+std::string parserHandler::getAttributeFromConfigLine(std::string line) {
+	line = line.substr(0, line.find("="));
+	line = line.substr(0, line.find_first_of(' '));
+	return line;
+}
+
+std::string parserHandler::getValueFromConfigLine(std::string line) {
+	line = line.substr(line.find('=') + 1, line.find(';') - line.find('=') - 1);
+	line = line.substr(line.find_first_not_of(' '));
+	return line;
+}
+
+std::string parserHandler::getMnemonicFromRulesStruct(std::string name) {
+	for (auto it : *(rules.get())) {
+		if (it.getName() == name) {
+			return it.getMnemonic();
+		}
 	}
+	errors->raiseError("Warning", "Rule with name [" + name + "] in configuration file not found. Mnemonic could not be returned");
+	return "";
+}
+
+int parserHandler::stringToInt(std::string str) {
+	int result = 0;
+	for (auto it : str) {
+		if (it >= '0' && it <= '9') {
+			result = result * 10 + (it - '0');
+		}
+		else {
+			errors->raiseError("Fatal", "String [" + str + "] cannot be transformed to integer value");
+		}
+	}
+	return result;
 }
 
 // ### private methods
@@ -138,18 +174,6 @@ void parserHandler::controlSizes() {
 }
 
 // ### private low level methods ###
-std::string parserHandler::getAttributeFromConfigLine(std::string line) {
-	line = line.substr(0, line.find("="));
-	line = line.substr(0, line.find_first_of(' '));
-	return line;
-}
-
-std::string parserHandler::getValueFromConfigLine(std::string line) {
-	line = line.substr(line.find('=') + 1, line.find(';') - line.find('=') - 1);
-	line = line.substr(line.find_first_not_of(' '));
-	return line;
-}
-
 std::string parserHandler::getElementFromValue(std::string &value) {
 	std::string element = "";
 
@@ -209,16 +233,6 @@ std::string parserHandler::getElementFromValue(std::string &value) {
 	}
 
 	return element;
-}
-
-std::string parserHandler::getMnemonicFromRulesStruct(std::string name) {
-	for (auto it : *(rules.get())) {
-		if (it.getName() == name) {
-			return it.getMnemonic();
-		}
-	}
-	errors->raiseError("Warning", "Rule with name [" + name + "] in configuration file not found. Mnemonic could not be returned");
-	return "";
 }
 
 std::shared_ptr<attrGrammarPtrVec> parserHandler::getGrammarFromTypeName(std::string attr) {
@@ -288,17 +302,4 @@ attrGrammarPtr parserHandler::getAttrGrammarPtr(std::string line) {
 	}
 
 	return attrGr;
-}
-
-int parserHandler::stringToInt(std::string str) {
-	int result = 0;
-	for (auto it : str) {
-		if (it >= '0' && it <= '9') {
-			result = result * 10 + (it - '0');
-		}
-		else {
-			errors->raiseError("Fatal", "String [" + str + "] cannot be transformed to integer value");
-		}
-	}
-	return result;
 }
