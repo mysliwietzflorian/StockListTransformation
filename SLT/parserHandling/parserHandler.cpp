@@ -21,6 +21,7 @@ parserHandler *parserHandler::getInstance() {
 
 void parserHandler::deleteInstance() {
 	if (instance != nullptr) {
+		// instance gets deleted
 		delete instance;
 	}
 }
@@ -37,7 +38,7 @@ void parserHandler::headerRequest() {
 			for (auto it2 : *(it1.getGrammar().get())) {
 				std::cout << it2->getLabel() << ": ";
 				std::getline(std::cin, element);
-				semanticAction::executeRules(it2, element);
+				actions->executeRules(it2, element);
 				// it2->executeRules(element);
 			}
 		}

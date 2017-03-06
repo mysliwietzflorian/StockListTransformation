@@ -1,24 +1,29 @@
 #include "./semanticActionHandler.h"
 
-#include <vector>
-#include <string>
 #include <iostream>
+#include <string>
+#include <vector>
 #include "../fileHandling/fileHandler.h"
 #include "../errorHandling/applicationError.h"
 #include "../parserHandling/parserHandler.h"
 #include "../parserHandling/parsingStruct.h"
 
-static std::vector<std::string> prepareToWriteVec {};
+extern semanticAction *actions = semanticAction::getInstance();
 
-// forward declarations
-static void findRuleFunction(std::string mnemonic, std::string &element, attrGrammarPtr attrGr);
-static std::string checkIntegrityCondition(std::string element, int length,
-	char mode, std::string label);
-static void checkMode(std::string element, char mode, std::string label);
-static std::string checkLength(std::string element, int length, char mode, std::string label);
-static void writeLine();
-static void pushToVec(std::string element);
-static std::string popFromVec(std::string element);
+// ### public methods ###
+semanticAction *semanticAction::getInstance() {
+	if (instance == nullptr) {
+		instance = new semanticAction();
+	}
+	return instance;
+}
+
+void semanticAction::deleteInstance() {
+	if (instance != nullptr) {
+		// instance gets deleted
+		delete instance;
+	}
+}
 
 void semanticAction::executeRules(attrGrammarPtr attrGr, std::string element) {
 	for (auto it : *(attrGr.get()->getRules().get())) {
@@ -28,9 +33,15 @@ void semanticAction::executeRules(attrGrammarPtr attrGr, std::string element) {
 	}
 }
 
-static void findRuleFunction(std::string mnemonic, std::string &element, attrGrammarPtr attrGr) {
+// ### private methods ###
+semanticAction *semanticAction::instance = nullptr;
 
-	static std::string buffer {""};
+semanticAction::semanticAction()
+: prepareToWriteVec {}
+, buffer {} {}
+
+void semanticAction::findRuleFunction(std::string mnemonic, std::string &element,
+	attrGrammarPtr attrGr) {
 
 	if (mnemonic == "integrityCondition") {
 		element = checkIntegrityCondition(element, attrGr->getLength(),
@@ -58,13 +69,15 @@ static void findRuleFunction(std::string mnemonic, std::string &element, attrGra
 	}
 }
 
-// application defined rules
-static std::string checkIntegrityCondition(std::string element, int length, char mode, std::string label) {
+// ### application defined rules ###
+std::string semanticAction::checkIntegrityCondition(std::string element,
+	int length, char mode, std::string label) {
+
 	checkMode(element, mode, label);
 	return checkLength(element, length, mode, label);
 }
 
-static void checkMode(std::string element, char mode, std::string label) {
+void semanticAction::checkMode(std::string element, char mode, std::string label) {
 	for (auto it : element) {
 		if (mode == 'A') {
 			if (!(it >= 'A' && it <= 'Z') &&
@@ -87,16 +100,16 @@ static void checkMode(std::string element, char mode, std::string label) {
 	}
 }
 
-static std::string checkLength(std::string element, int length, char mode, std::string label) {
-	if (element.size() > length) {
+std::string semanticAction::checkLength(std::string element, int length, char mode, std::string label) {
+	if (element.size() > unsigned(length)) {
 		element = element.substr(0, length);
 		errors->raiseError("Warning", "Element [" + label + "] is longer than defined in configuration file");
 	} else if (mode == 'A') {
-		while (element.size() < length) {
+		while (element.size() < unsigned(length)) {
 			element = element + ' ';
 		}
 	} else if (mode == 'N') {
-		while (element.size() < length) {
+		while (element.size() < unsigned(length)) {
 			element = ' ' + element;
 		}
 	} else {
@@ -105,7 +118,7 @@ static std::string checkLength(std::string element, int length, char mode, std::
 	return element;
 }
 
-static void writeLine() {
+void semanticAction::writeLine() {
 	std::string line {""};
 
 	for (auto it : prepareToWriteVec) {
@@ -117,14 +130,14 @@ static void writeLine() {
 	files->write(line);
 }
 
-static void pushToVec(std::string element) {
+void semanticAction::pushToVec(std::string element) {
 	prepareToWriteVec.push_back(element);
 }
 
-static std::string popFromVec(std::string element) {
+std::string semanticAction::popFromVec(std::string element) {
 	std::string result = prepareToWriteVec.back();
 	prepareToWriteVec.pop_back();
 	return result;
 }
 
-// user defined rules
+// ### user defined rules ###

@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include "../fileHandling/fileHandler.h"
 #include "../parserHandling/parserHandler.h"
+#include "../semanticActionHandling/semanticActionHandler.h"
 
 extern applicationError *errors = applicationError::getInstance();
 
@@ -26,6 +27,7 @@ void applicationError::atExitFunction(void) {
 	files->deleteInstance();
 	errors->deleteInstance();
 	parser->deleteInstance();
+	actions->deleteInstance();
 	system("pause");
 }
 
