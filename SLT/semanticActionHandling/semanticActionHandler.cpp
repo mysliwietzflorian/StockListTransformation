@@ -52,7 +52,7 @@ void semanticAction::findRuleFunction(std::string mnemonic, std::string &element
 		pushToVec(element);
 	} else if (mnemonic == "pop") {
 		buffer = popFromVec(element);
-	} else if (mnemonic == "comment") {
+	} /*else if (mnemonic == "comment") {
 		std::cout << mnemonic << ": Not implemented yet." << std::endl;
 	} else if (mnemonic == "decuple") {
 		std::cout << mnemonic << ": Not implemented yet." << std::endl;
@@ -64,8 +64,8 @@ void semanticAction::findRuleFunction(std::string mnemonic, std::string &element
 		std::cout << mnemonic << ": Not implemented yet." << std::endl;
 	} else if (mnemonic == "articleNr") {
 		std::cout << mnemonic << ": Not implemented yet." << std::endl;
-	} else {
-		errors->raiseError("Warning", "Rule with value [" + mnemonic + "] is not implemented");
+	} */else {
+		// errors->raiseError("Warning", "Rule with value [" + mnemonic + "] is not implemented");
 	}
 }
 
@@ -88,7 +88,7 @@ void semanticAction::checkMode(std::string element, char mode, std::string label
 				(it != ',') && (it != '/') && (it != '.') &&
 				(it != ':') && (it != ' ') && (it != '{') && (it != '}')) {
 
-				errors->raiseError("Fatal", "Element [" + label + "] is not alpha-numerical");
+				// errors->raiseError("Fatal", "Element [" + label + "] is not alpha-numerical");
 			}
 		} else if (mode == 'N') {
 			if (!(it >= '0' && it <= '9')) {

@@ -59,6 +59,9 @@ private: // hidden constructor && destructor
 	// control sizes of attrGrammarPtrVec
 	void controlSizes();
 
+	// parse line of input file line
+	void parseInputLine(std::string line, char delimiterChar);
+
 	// ### private low level methods ###
 	// return first element of a configuration file value
 	// erase that element from value

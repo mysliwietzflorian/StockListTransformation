@@ -39,14 +39,19 @@ void parserHandler::headerRequest() {
 				std::cout << it2->getLabel() << ": ";
 				std::getline(std::cin, element);
 				actions->executeRules(it2, element);
-				// it2->executeRules(element);
 			}
 		}
 	}
 }
 
 void parserHandler::parseInputFile() {
+	char delimiterChar = char(stringToInt(files->getConfigLine("delimiterChar")));
+	std::string line = files->getLine();
 
+	while (!line.empty()) {
+		parseInputLine(line, delimiterChar);
+		line = files->getLine();
+	}
 }
 
 // ## public low level methods
@@ -104,7 +109,7 @@ parserHandler::parserHandler()
 // ### private high level methods ###
 void parserHandler::fillRulesStruct() {
 	files->resetConfigFile();
-	std::string line {files->getConfigLine()};
+	std::string line = files->getConfigLine();
 
 	while (!line.empty()) {
 		if (line.find("rule") == 0) {
@@ -170,6 +175,32 @@ void parserHandler::controlSizes() {
 	for (auto it : *(data.get())) {
 		if (it.getGrammar()->size() == 0) {
 			errors->raiseError("Warning", "No attribute grammar is defined for [" + it.getName() + "]");
+		}
+	}
+}
+
+void parserHandler::parseInputLine(std::string line, char delimiterChar) {
+	std::cout << line << std::endl;
+
+	for (auto it1 : *(data.get())) {
+		if (it1.getType() == "recurring") {
+
+			std::string element {""};
+			for (auto it2 : *(it1.getGrammar().get())) {
+				element = line.substr(0, line.find_first_of(delimiterChar));
+
+				// std::cout << it2->getLabel() << ": ";
+				// std::cout << line.substr(0, line.find_first_of(delimiterChar)) << std::endl;
+
+				/* if (line.find(delimiterChar) == -1) {
+					std::cout << "### Warning ###\nline is shorter than expected" << std::endl;
+					break;
+				} */
+
+				line.erase(0, line.find(delimiterChar) + 1);
+				actions->executeRules(it2, element.substr(0, element.find_last_not_of(delimiterChar) - 1));
+			}
+			std::cout << std::endl;
 		}
 	}
 }
