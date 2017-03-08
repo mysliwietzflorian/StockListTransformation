@@ -30,6 +30,9 @@ public:
 	// jump back to begin of configFile
 	void resetConfigFile();
 
+	// delete content of output file
+	void resetOutputFile();
+
 private: // hidden constructor && destructor
 	static fileHandler *instance;
 

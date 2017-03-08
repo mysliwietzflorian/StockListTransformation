@@ -33,6 +33,7 @@ void applicationError::atExitFunction(void) {
 
 void applicationError::raiseError() {
 	std::cout << std::endl << "Fatal. Compilation aborted." << std::endl;
+	files->resetOutputFile();
 	atExitFunction();
 	std::exit(EXIT_FAILURE);
 }

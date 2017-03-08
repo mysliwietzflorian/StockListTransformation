@@ -64,6 +64,14 @@ void fileHandler::resetConfigFile() {
 	configFile.seekg(0, std::ios::beg);
 }
 
+void fileHandler::resetOutputFile() {
+	if (outFile.is_open()) {
+		outFile.close();
+	}
+	outFile.open(getConfigLine("outFileName"), std::ios::out);
+	outFile.close();
+}
+
 // ### private methods ###
 fileHandler *fileHandler::instance = nullptr;
 
