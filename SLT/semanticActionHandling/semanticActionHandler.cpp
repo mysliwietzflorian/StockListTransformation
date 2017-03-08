@@ -29,7 +29,16 @@ void semanticAction::executeRules(attrGrammarPtr attrGr, std::string element) {
 	for (auto it : *(attrGr.get()->getRules().get())) {
 		std::string mnemonic = parser->getMnemonicFromRulesStruct(it);
 
-		findRuleFunction(mnemonic, element, attrGr);
+		// push raw element with semicolon if comment line and push mnemonic
+		if (ignoreRules && mnemonic == "push") {
+			pushToVec(element + ";");
+			if (prepareToWriteVec.size() > 0) {
+				prepareToWriteVec[1] = "";
+			}
+
+		} else if (!ignoreRules || (ignoreRules && mnemonic == "writeLine")) {
+			findRuleFunction(mnemonic, element, attrGr);
+		}
 	}
 }
 
@@ -38,7 +47,7 @@ semanticAction *semanticAction::instance = nullptr;
 
 semanticAction::semanticAction()
 : prepareToWriteVec {}
-, buffer {} {}
+, ignoreRules {false} {}
 
 void semanticAction::findRuleFunction(std::string mnemonic, std::string &element,
 	attrGrammarPtr attrGr) {
@@ -50,20 +59,18 @@ void semanticAction::findRuleFunction(std::string mnemonic, std::string &element
 		writeLine();
 	} else if (mnemonic == "push") {
 		pushToVec(element);
-	} else if (mnemonic == "pop") {
-		buffer = popFromVec(element);
-	} /*else if (mnemonic == "comment") {
-		std::cout << mnemonic << ": Not implemented yet." << std::endl;
-	} else if (mnemonic == "decuple") {
-		std::cout << mnemonic << ": Not implemented yet." << std::endl;
+	} else if (mnemonic == "comment") {
+		checkComment(element);
+	} /*else if (mnemonic == "decuple") {
+
 	} else if (mnemonic == "panel") {
-		std::cout << mnemonic << ": Not implemented yet." << std::endl;
+
 	} else if (mnemonic == "surface") {
-		std::cout << mnemonic << ": Not implemented yet." << std::endl;
+
 	} else if (mnemonic == "edge") {
-		std::cout << mnemonic << ": Not implemented yet." << std::endl;
+
 	} else if (mnemonic == "articleNr") {
-		std::cout << mnemonic << ": Not implemented yet." << std::endl;
+
 	} */else {
 		// errors->raiseError("Warning", "Rule with value [" + mnemonic + "] is not implemented");
 	}
@@ -83,7 +90,11 @@ void semanticAction::checkMode(std::string element, char mode, std::string label
 			if (!(it >= 'A' && it <= 'Z') &&
 				!(it >= 'a' && it <= 'z') &&
 				!(it >= '0' && it <= '9') &&
+
 				// TODO: umlauts and sharp s
+				/*(it != 196) && (it != 214) && (it != 220) &&
+				(it != 228) && (it != 246) && (it != 252) && (it != 223) &&*/
+
 				(it != '_') && (it != '-') && (it != ' ') &&
 				(it != ',') && (it != '/') && (it != '.') &&
 				(it != ':') && (it != ' ') && (it != '{') && (it != '}')) {
@@ -122,22 +133,39 @@ void semanticAction::writeLine() {
 	std::string line {""};
 
 	for (auto it : prepareToWriteVec) {
-		line += it;
+			line += it;
 	}
+
+	// trim comment line if too long
+	if (ignoreRules) {
+		int commentLength = parser->stringToInt(files->getConfigLine("commentLength"));
+		line = checkIntegrityCondition(line, commentLength, 'A', "Comment");
+	}
+
 	line += "\n";
 
 	prepareToWriteVec.clear();
 	files->write(line);
+	std::cout << "#" << line << std::endl;
+	ignoreRules = false;
 }
 
 void semanticAction::pushToVec(std::string element) {
 	prepareToWriteVec.push_back(element);
 }
 
-std::string semanticAction::popFromVec(std::string element) {
-	std::string result = prepareToWriteVec.back();
-	prepareToWriteVec.pop_back();
-	return result;
-}
-
 // ### user defined rules ###
+void semanticAction::checkComment(std::string element) {
+	if (prepareToWriteVec.size() <= 0) {
+		errors->raiseError("Fatal", "rule [comment] must not be used in first attribute grammar");
+	}
+
+	// make comment if first two elements are empty
+	// ignore rest of the rules and write as is to output file
+	if (element.find_first_not_of(' ') == -1 &&
+		prepareToWriteVec[0].find_first_not_of(' ') == -1) {
+
+		prepareToWriteVec[0] = char(parser->stringToInt(files->getConfigLine("commentChar")));
+		ignoreRules = true;
+	}
+}

@@ -187,18 +187,21 @@ void parserHandler::parseInputLine(std::string line, char delimiterChar) {
 
 			std::string element {""};
 			for (auto it2 : *(it1.getGrammar().get())) {
+				// get element without semicolon from input file line
 				element = line.substr(0, line.find_first_of(delimiterChar));
+				// trim whitespaces from element
+				element = element.erase(0, element.find_first_not_of(' '));
+				element = element.erase(element.find_last_not_of(' ') + 1);
 
-				// std::cout << it2->getLabel() << ": ";
-				// std::cout << line.substr(0, line.find_first_of(delimiterChar)) << std::endl;
+				// print warning if less elements are in input file
+				// than defined in attribute grammar in configuration file
+				if (line.find(delimiterChar) == -1) {
+					errors->raiseError("Warning", "Line in input file is shorter than expected");
+				}
 
-				/* if (line.find(delimiterChar) == -1) {
-					std::cout << "### Warning ###\nline is shorter than expected" << std::endl;
-					break;
-				} */
-
+				// delete element with semicolon from input file line
 				line.erase(0, line.find(delimiterChar) + 1);
-				actions->executeRules(it2, element.substr(0, element.find_last_not_of(delimiterChar) - 1));
+				actions->executeRules(it2, element);
 			}
 			std::cout << std::endl;
 		}

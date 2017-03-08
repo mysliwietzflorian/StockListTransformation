@@ -53,10 +53,13 @@ private: // hidden constructor && destructor
     std::string popFromVec(std::string element);
 
     // ### private user defined rules ###
+	// add commentChar if both elements are empty
+	// trim to commentLength defined in configuration file
+	void checkComment(std::string element);
 
 private: // components
     std::vector<std::string> prepareToWriteVec {};
-    std::string buffer {};
+	bool ignoreRules {false};
 };
 
 extern semanticAction *actions;
