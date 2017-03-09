@@ -57,6 +57,23 @@ private: // hidden constructor && destructor
 	// trim to commentLength defined in configuration file
 	void checkComment(std::string element);
 
+	// multiply number by 10 and return result
+	std::string decouple(std::string element);
+
+	// combine 6th and 7th attribute with special rules
+	// repeat checkIntegrityCondition
+	std::string combinePanel(std::string element);
+
+	// insert 1 before string if "U_" or "u_"
+	// insert 0 else
+	// delete commas
+	// format in a way defined in documentation
+	std::string checkEdge(std::string element, std::string label);
+
+	// insert articleNr into 3rd attribute grammar if panel starts with '&'
+	// repeat checkIntegrityCondition
+	void insertArticleNr(std::string element);
+
 private: // components
     std::vector<std::string> prepareToWriteVec {};
 	bool ignoreRules {false};

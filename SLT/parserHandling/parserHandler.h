@@ -34,9 +34,6 @@ public:
 	// get corresponding mnemonic to name from rulesStruct
 	std::string getMnemonicFromRulesStruct(std::string name);
 
-	// convert string to integer and check for errors
-	int stringToInt(std::string str);
-
 private: // hidden constructor && destructor
 	static parserHandler *instance;
 

@@ -45,7 +45,7 @@ void parserHandler::headerRequest() {
 }
 
 void parserHandler::parseInputFile() {
-	char delimiterChar = char(stringToInt(files->getConfigLine("delimiterChar")));
+	char delimiterChar = char(std::stoi(files->getConfigLine("delimiterChar")));
 	std::string line = files->getLine();
 
 	while (!line.empty()) {
@@ -75,19 +75,6 @@ std::string parserHandler::getMnemonicFromRulesStruct(std::string name) {
 	}
 	errors->raiseError("Warning", "Rule with name [" + name + "] in configuration file not found. Mnemonic could not be returned");
 	return "";
-}
-
-int parserHandler::stringToInt(std::string str) {
-	int result = 0;
-	for (auto it : str) {
-		if (it >= '0' && it <= '9') {
-			result = result * 10 + (it - '0');
-		}
-		else {
-			errors->raiseError("Fatal", "String [" + str + "] cannot be transformed to integer value");
-		}
-	}
-	return result;
 }
 
 // ### private methods
@@ -193,12 +180,6 @@ void parserHandler::parseInputLine(std::string line, char delimiterChar) {
 				element = element.erase(0, element.find_first_not_of(' '));
 				element = element.erase(element.find_last_not_of(' ') + 1);
 
-				// print warning if less elements are in input file
-				// than defined in attribute grammar in configuration file
-				if (line.find(delimiterChar) == -1) {
-					errors->raiseError("Warning", "Line in input file is shorter than expected");
-				}
-
 				// delete element with semicolon from input file line
 				line.erase(0, line.find(delimiterChar) + 1);
 				actions->executeRules(it2, element);
@@ -299,13 +280,13 @@ attrGrammarPtr parserHandler::getAttrGrammarPtr(std::string line) {
 	std::string value = getValueFromConfigLine(line);
 
 	if (value.find("{}") != 0 && value.size() != 0) {
-		offset = stringToInt(getElementFromValue(value));
+		offset = std::stoi(getElementFromValue(value));
 	} else {
 		errors->raiseError("Fatal", "Wrong number of arguments in line [" + line + "] from configuration file");
 	}
 
 	if (value.find("{}") != 0 && value.size() != 0) {
-		length = stringToInt(getElementFromValue(value));
+		length = std::stoi(getElementFromValue(value));
 	} else {
 		errors->raiseError("Fatal", "Wrong number of arguments in line [" + line + "] from configuration file");
 	}
