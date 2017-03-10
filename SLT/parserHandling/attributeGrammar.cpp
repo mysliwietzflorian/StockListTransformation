@@ -1,13 +1,13 @@
 #include "./attributeGrammar.h"
 
+#include <iostream>
 #include <memory>
 #include <string>
 #include <vector>
-#include <iostream>
 
 // ### public methods ###
-attributeGrammar::attributeGrammar(std::string name, std::string id, int offset,
-	int length, char mode, std::string label)
+attributeGrammar::attributeGrammar(const std::string &name, const std::string &id, int offset,
+	int length, char mode, const std::string &label)
 : name {name}
 , id {id}
 , offset {offset}
@@ -16,35 +16,35 @@ attributeGrammar::attributeGrammar(std::string name, std::string id, int offset,
 , label {label}
 , rules {new stringVec} {}
 
-std::string attributeGrammar::getName() {
+std::string attributeGrammar::getName() const {
 	return name;
 }
 
-std::string attributeGrammar::getId() {
+std::string attributeGrammar::getId() const {
 	return id;
 }
 
-int attributeGrammar::getOffset() {
+int attributeGrammar::getOffset() const {
 	return offset;
 }
 
-int attributeGrammar::getLength() {
+int attributeGrammar::getLength() const {
 	return length;
 }
 
-char attributeGrammar::getMode() {
+char attributeGrammar::getMode() const {
 	return mode;
 }
 
-std::string attributeGrammar::getLabel() {
+std::string attributeGrammar::getLabel() const {
 	return label;
 }
 
-std::shared_ptr<stringVec> attributeGrammar::getRules() {
+std::shared_ptr<stringVec> attributeGrammar::getRules() const {
 	return rules;
 }
 
-void attributeGrammar::print() {
+void attributeGrammar::print() const {
 	std::cout << name << "[" << id << "] = {";
 	std::cout << offset << ", ";
 	std::cout << length << ", ";

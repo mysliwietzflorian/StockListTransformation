@@ -1,9 +1,9 @@
 #include "./parserHandler.h"
 
+#include <iostream>
 #include <memory>
 #include <string>
 #include <vector>
-#include <iostream>
 #include "./attributeGrammar.h"
 #include "../errorHandling/applicationError.h"
 #include "../fileHandling/fileHandler.h"
@@ -26,12 +26,14 @@ void parserHandler::deleteInstance() {
 	}
 }
 
-void parserHandler::headerRequest() {
+void parserHandler::headerRequest() const {
 	if (files->getConfigLine("printHeader") != "true") {
 		return;
 	}
 
 	for (auto it1 : *(data.get())) {
+		// if type 'nonrecurring' print label to command line for usability
+		// get element from command line and parse it through defined rules
 		if (it1.getType() == "nonrecurring") {
 
 			std::string element {""};
@@ -42,9 +44,10 @@ void parserHandler::headerRequest() {
 			}
 		}
 	}
+	std::cout << std::endl;
 }
 
-void parserHandler::parseInputFile() {
+void parserHandler::parseInputFile() const {
 	char delimiterChar = char(std::stoi(files->getConfigLine("delimiterChar")));
 	std::string line = files->getLine();
 
@@ -55,19 +58,22 @@ void parserHandler::parseInputFile() {
 }
 
 // ## public low level methods
-std::string parserHandler::getAttributeFromConfigLine(std::string line) {
+std::string parserHandler::getAttributeFromConfigLine(std::string line) const {
+	// get attribute before '=' and trim whitespaces
 	line = line.substr(0, line.find("="));
 	line = line.substr(0, line.find_first_of(' '));
 	return line;
 }
 
-std::string parserHandler::getValueFromConfigLine(std::string line) {
+std::string parserHandler::getValueFromConfigLine(std::string line) const {
+	// get value after '=' and before ';' and trim whitespaces
 	line = line.substr(line.find('=') + 1, line.find(';') - line.find('=') - 1);
 	line = line.substr(line.find_first_not_of(' '));
 	return line;
 }
 
-std::string parserHandler::getMnemonicFromRulesStruct(std::string name) {
+std::string parserHandler::getMnemonicFromRulesStruct(const std::string &name) const {
+	// cycle through rulesStruct to find corresponding mnemonic
 	for (auto it : *(rules.get())) {
 		if (it.getName() == name) {
 			return it.getMnemonic();
@@ -84,7 +90,7 @@ parserHandler::parserHandler()
 : data {new parsingStruct}
 , rules {new rulesStruct} {
 
-	std::cout << "StockListTransformation [Version 17w09a]" << std::endl;
+	std::cout << "StockListTransformation [Version 17w10a]" << std::endl;
 	std::cout << "(c) 2017 Mysliwietz Florian. Alle Rechte vorbehalten." << std::endl << std::endl;
 
 	fillRulesStruct();
@@ -94,7 +100,7 @@ parserHandler::parserHandler()
 }
 
 // ### private high level methods ###
-void parserHandler::fillRulesStruct() {
+void parserHandler::fillRulesStruct() const {
 	files->resetConfigFile();
 	std::string line = files->getConfigLine();
 
@@ -116,7 +122,7 @@ void parserHandler::fillRulesStruct() {
 	}
 }
 
-void parserHandler::findGrammarNames() {
+void parserHandler::findGrammarNames() const {
 	files->resetConfigFile();
 	std::string line {files->getConfigLine()};
 
@@ -141,13 +147,13 @@ void parserHandler::findGrammarNames() {
 	}
 }
 
-void parserHandler::fillParsingStruct() {
+void parserHandler::fillParsingStruct() const {
 	files->resetConfigFile();
 	std::string line {files->getConfigLine() };
 
 	while(!line.empty()) {
-		std::string attr {getAttributeFromConfigLine(line)};
-		std::string value {getValueFromConfigLine(line)};
+		std::string attr = getAttributeFromConfigLine(line);
+		std::string value = getValueFromConfigLine(line);
 
 		if (attr.find('[') != -1 && value.front() == '{') {
 			std::shared_ptr<attrGrammarPtrVec> grammar = getGrammarFromTypeName(attr);
@@ -158,7 +164,7 @@ void parserHandler::fillParsingStruct() {
 	files->resetConfigFile();
 }
 
-void parserHandler::controlSizes() {
+void parserHandler::controlSizes() const {
 	for (auto it : *(data.get())) {
 		if (it.getGrammar()->size() == 0) {
 			errors->raiseError("Warning", "No attribute grammar is defined for [" + it.getName() + "]");
@@ -166,8 +172,8 @@ void parserHandler::controlSizes() {
 	}
 }
 
-void parserHandler::parseInputLine(std::string line, char delimiterChar) {
-	std::cout << line << std::endl;
+void parserHandler::parseInputLine(std::string line, char delimiterChar) const {
+	std::cout << "Processing: " << line << std::endl;
 
 	for (auto it1 : *(data.get())) {
 		if (it1.getType() == "recurring") {
@@ -190,7 +196,7 @@ void parserHandler::parseInputLine(std::string line, char delimiterChar) {
 }
 
 // ### private low level methods ###
-std::string parserHandler::getElementFromValue(std::string &value) {
+std::string parserHandler::getElementFromValue(std::string &value) const {
 	std::string element = "";
 
 	// return if value is empty
@@ -251,7 +257,7 @@ std::string parserHandler::getElementFromValue(std::string &value) {
 	return element;
 }
 
-std::shared_ptr<attrGrammarPtrVec> parserHandler::getGrammarFromTypeName(std::string attr) {
+std::shared_ptr<attrGrammarPtrVec> parserHandler::getGrammarFromTypeName(std::string attr) const {
 	attr = attr.substr(0, attr.find('['));
 
 	for (auto it : *(data.get())) {
@@ -263,7 +269,7 @@ std::shared_ptr<attrGrammarPtrVec> parserHandler::getGrammarFromTypeName(std::st
 	return std::make_shared<attrGrammarPtrVec>();
 }
 
-attrGrammarPtr parserHandler::getAttrGrammarPtr(std::string line) {
+attrGrammarPtr parserHandler::getAttrGrammarPtr(const std::string &line) const {
 	std::string name {""};
 	std::string id {""};
 	int offset {0};

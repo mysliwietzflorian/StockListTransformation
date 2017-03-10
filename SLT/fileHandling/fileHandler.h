@@ -16,7 +16,7 @@ public:
 	void deleteInstance();
 
 	// write to outFile
-	void write(std::string str);
+	void write(const std::string &str);
 
 	// read line from inFile
 	std::string getLine();
@@ -25,7 +25,7 @@ public:
 	std::string getConfigLine();
 
 	// read values from configFile with specific attribute
-	std::string getConfigLine(std::string attribute);
+	std::string getConfigLine(const std::string &attribute);
 
 	// jump back to begin of configFile
 	void resetConfigFile();

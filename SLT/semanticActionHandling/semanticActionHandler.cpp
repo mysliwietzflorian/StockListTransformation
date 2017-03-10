@@ -32,6 +32,7 @@ void semanticAction::executeRules(attrGrammarPtr attrGr, std::string element) {
 		// push raw element with semicolon if comment line and push mnemonic
 		if (ignoreRules && mnemonic == "push" && element.size() != 0) {
 			pushToVec(element + ";");
+		// find the corresponding function to mnemonic
 		} else if (!ignoreRules || (ignoreRules && mnemonic == "writeLine")) {
 			findRuleFunction(mnemonic, element, attrGr);
 		}
@@ -45,7 +46,7 @@ semanticAction::semanticAction()
 : prepareToWriteVec {}
 , ignoreRules {false} {}
 
-void semanticAction::findRuleFunction(std::string mnemonic, std::string &element,
+void semanticAction::findRuleFunction(const std::string &mnemonic, std::string &element,
 	attrGrammarPtr attrGr) {
 
 	if (mnemonic == "integrityCondition") {
@@ -72,13 +73,13 @@ void semanticAction::findRuleFunction(std::string mnemonic, std::string &element
 
 // ### application defined rules ###
 std::string semanticAction::checkIntegrityCondition(std::string element,
-	int length, char mode, std::string label) {
+	int length, char mode, const std::string &label) const {
 
 	checkMode(element, mode, label);
 	return checkLength(element, length, mode, label);
 }
 
-void semanticAction::checkMode(std::string element, char mode, std::string label) {
+void semanticAction::checkMode(const std::string &element, char mode, const std::string &label) const {
 	for (auto it : element) {
 		if (mode == 'A') {
 			if (!(it >= 'A' && it <= 'Z') &&
@@ -106,7 +107,7 @@ void semanticAction::checkMode(std::string element, char mode, std::string label
 	}
 }
 
-std::string semanticAction::checkLength(std::string element, int length, char mode, std::string label) {
+std::string semanticAction::checkLength(std::string element, int length, char mode, const std::string &label) const {
 	if (element.size() > unsigned(length) && mode == 'A') {
 		element = element.substr(0, length);
 		errors->raiseError("Warning", "Element [" + label + "] is longer than defined in configuration file");
@@ -147,12 +148,12 @@ void semanticAction::writeLine() {
 	ignoreRules = false;
 }
 
-void semanticAction::pushToVec(std::string element) {
+void semanticAction::pushToVec(const std::string &element) {
 	prepareToWriteVec.push_back(element);
 }
 
 // ### user defined rules ###
-void semanticAction::checkComment(std::string element) {
+void semanticAction::checkComment(const std::string &element) {
 	if (prepareToWriteVec.size() <= 0) {
 		errors->raiseError("Fatal", "rule [comment] must not be used in first attribute grammar");
 	}
@@ -167,7 +168,7 @@ void semanticAction::checkComment(std::string element) {
 	}
 }
 
-std::string semanticAction::decouple(std::string element) {
+std::string semanticAction::decouple(std::string element) const {
 	if (element.size() == 0) {
 		return "";
 	} else {
@@ -181,14 +182,17 @@ std::string semanticAction::combinePanel(std::string element) {
 		errors->raiseError("Fatal", "rule [panel] must not be used in the first six attribute grammars");
 	}
 
+	// save and format panel and hoFM for later
 	int element_size = element.size();
 	std::string hoFM = prepareToWriteVec[5];
 	int hoFM_size = hoFM.size();
 	hoFM = hoFM.erase(0, hoFM.find_first_not_of(' '));
 
+	// if panel begins with '+' or '-'
 	if (element.front() == '+' || element.front() == '-') {
 		element = element.front() + hoFM + " " + element.substr(1);
 
+	// if panel begins with '&'
 	} else if (element.front() != '&') {
 		element = hoFM + " " + element;
 	}
@@ -198,7 +202,7 @@ std::string semanticAction::combinePanel(std::string element) {
 	return element;
 }
 
-std::string semanticAction::checkEdge(std::string element, std::string label) {
+std::string semanticAction::checkEdge(std::string element, const std::string &label) const {
 	if (element.size() == 0) {
 		return "";
 	}
@@ -249,18 +253,21 @@ void semanticAction::insertArticleNr(std::string element) {
 		return;
 	}
 
+	// write column 17 to 07
 	if (element.find_first_not_of(' ') != -1) {
 		element = checkIntegrityCondition(element, 12, 'A', "Lieferant");
 		prepareToWriteVec[5] = "";
 		prepareToWriteVec[6] = element;
 	}
 
+	// write column 03 -> 14
 	element = prepareToWriteVec[2];
 	if (element.find_first_not_of(' ') != -1) {
 		element = checkIntegrityCondition(element, 30, 'A', "Bemerkung");
 		prepareToWriteVec[13] = element;
 	}
 
+	// write column 16 -> 03
 	element = prepareToWriteVec[15];
 	if (element.find_first_not_of(' ') != -1) {
 		element = checkIntegrityCondition(element, 18, 'A', "Teil");

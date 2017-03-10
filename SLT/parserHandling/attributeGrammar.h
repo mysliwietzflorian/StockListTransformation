@@ -10,24 +10,24 @@ typedef std::vector<std::string> stringVec;
 class attributeGrammar final {
 public:
 	attributeGrammar() = delete;
-	attributeGrammar(std::string name, std::string id, int offset,
-		int length, char mode, std::string label);
+	attributeGrammar(const std::string &name, const std::string &id, int offset,
+		int length, char mode, const std::string &label);
 	virtual ~attributeGrammar() = default;
 	// delete copy and move constructors
 	attributeGrammar(const attributeGrammar &) = delete;
 	attributeGrammar(attributeGrammar &&) = delete;
 
 	// getter and setter methods
-	std::string getName();
-	std::string getId();
-	int getOffset();
-	int getLength();
-	char getMode();
-	std::string getLabel();
-	std::shared_ptr<stringVec> getRules();
+	std::string getName() const;
+	std::string getId() const;
+	int getOffset() const;
+	int getLength() const;
+	char getMode() const;
+	std::string getLabel() const;
+	std::shared_ptr<stringVec> getRules() const;
 
-	// temporary method to print components of class
-	void print();
+	// method to print components of class
+	void print() const;
 
 private:
 	std::string name {"<no_name>"};

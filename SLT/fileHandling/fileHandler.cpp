@@ -21,7 +21,7 @@ void fileHandler::deleteInstance() {
 	}
 }
 
-void fileHandler::write(std::string str) {
+void fileHandler::write(const std::string &str) {
 	outFile << str;
 }
 
@@ -35,22 +35,26 @@ std::string fileHandler::getConfigLine() {
 	std::string line {""};
 	std::getline(configFile, line);
 
+	// ignore all configuration file lines that are empty or begin with '#'
 	while (!configFile.eof() && (line.empty() || line.front() == '#')) {
 		std::getline(configFile, line);
 	}
 	return line;
 }
 
-std::string fileHandler::getConfigLine(std::string attribute) {
+std::string fileHandler::getConfigLine(const std::string &attribute) {
 	resetConfigFile();
 	std::string value {getConfigLine()};
 
 	while (!value.empty() && value.find(attribute) == -1) {
 		value = getConfigLine();
 	}
+
 	if (value.empty()) {
 		errors->raiseError("Warning", "Attribute [" + attribute + "] in configuration file not set");
 	} else if (value.find(attribute) != -1) {
+		// parse value from found attribute line without '=' and ';'
+		// trim whitespaces
 		value = value.substr(value.find('=') + 1, value.find(';') - value.find('=') - 1);
 		value = value.substr(value.find_first_not_of(' '));
 	}

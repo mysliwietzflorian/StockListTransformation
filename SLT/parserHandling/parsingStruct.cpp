@@ -1,28 +1,28 @@
 #include "./parsingStruct.h"
 
+#include <iostream>
 #include <memory>
 #include <string>
-#include <iostream>
 
 // ### public methods ###
-attrGrammarType::attrGrammarType(std::string name, std::string type)
+attrGrammarType::attrGrammarType(const std::string &name, const std::string &type)
 : name {name}
 , type {type}
 , grammar {std::make_shared<attrGrammarPtrVec>()} {}
 
-std::string attrGrammarType::getName() {
+std::string attrGrammarType::getName() const {
 	return name;
 }
 
-std::string attrGrammarType::getType() {
+std::string attrGrammarType::getType() const {
 	return type;
 }
 
-std::shared_ptr<attrGrammarPtrVec> attrGrammarType::getGrammar() {
+std::shared_ptr<attrGrammarPtrVec> attrGrammarType::getGrammar() const {
 	return grammar;
 }
 
-void attrGrammarType::print() {
+void attrGrammarType::print() const {
 	std::cout << "name:    " << name << std::endl;
 	std::cout << "type:    " << type << std::endl;
 	std::cout << "grammar: " << std::endl;
@@ -33,19 +33,19 @@ void attrGrammarType::print() {
 }
 
 // ### public methods ###
-rulesType::rulesType(std::string name, std::string mnemonic)
+rulesType::rulesType(const std::string &name, const std::string &mnemonic)
 : name {name}
 , mnemonic {mnemonic} {}
 
-std::string rulesType::getName() {
+std::string rulesType::getName() const {
 	return name;
 }
 
-std::string rulesType::getMnemonic() {
+std::string rulesType::getMnemonic() const {
 	return mnemonic;
 }
 
-void rulesType::print() {
+void rulesType::print() const {
 	std::cout << "name:     " << name << std::endl;
 	std::cout << "mnemonic: " << mnemonic << std::endl;
 }

@@ -19,20 +19,20 @@ public:
 	void deleteInstance();
 
 	// (if configured) request header and write to output file
-	void headerRequest();
+	void headerRequest() const;
 
 	// parse input file, execute rules and write to output file
-	void parseInputFile();
+	void parseInputFile() const;
 
 	// ## public low level methods
 	// get the attribute from a given configuration file line
-	std::string getAttributeFromConfigLine(std::string line);
+	std::string getAttributeFromConfigLine(std::string line) const;
 
 	// get the value(s) from a given configuration file line
-	std::string getValueFromConfigLine(std::string line);
+	std::string getValueFromConfigLine(std::string line) const;
 
 	// get corresponding mnemonic to name from rulesStruct
-	std::string getMnemonicFromRulesStruct(std::string name);
+	std::string getMnemonicFromRulesStruct(const std::string &sname) const;
 
 private: // hidden constructor && destructor
 	static parserHandler *instance;
@@ -44,32 +44,32 @@ private: // hidden constructor && destructor
 
 	// ### private high level methods ###
 	// fill rules with mnemonics from configuration file
-	void fillRulesStruct();
+	void fillRulesStruct() const;
 
 	// find grammar names from configuration file
 	// initialize grammarTypes in parsingStruct
-	void findGrammarNames();
+	void findGrammarNames() const;
 
 	// tranverse configuration file and fill grammarTypes with attributeGrammar
-	void fillParsingStruct();
+	void fillParsingStruct() const;
 
 	// control sizes of attrGrammarPtrVec
-	void controlSizes();
+	void controlSizes() const;
 
 	// parse line of input file line
-	void parseInputLine(std::string line, char delimiterChar);
+	void parseInputLine(std::string line, char delimiterChar) const;
 
 	// ### private low level methods ###
 	// return first element of a configuration file value
 	// erase that element from value
-	std::string getElementFromValue(std::string &value);
+	std::string getElementFromValue(std::string &value) const;
 
 	// get attrGrammarPtrVec in attrGrammarType from attribute
-	std::shared_ptr<attrGrammarPtrVec> getGrammarFromTypeName(std::string attr);
+	std::shared_ptr<attrGrammarPtrVec> getGrammarFromTypeName(std::string attr) const;
 
 	// parse line and construct an object of attributeGrammar
 	// make that object to shared_ptr and return result
-	attrGrammarPtr getAttrGrammarPtr(std::string line);
+	attrGrammarPtr getAttrGrammarPtr(const std::string &line) const;
 
 private: // components
 	std::shared_ptr<parsingStruct> data {std::make_shared<parsingStruct>()};

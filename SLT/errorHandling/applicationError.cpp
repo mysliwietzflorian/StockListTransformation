@@ -1,7 +1,6 @@
 #include "./applicationError.h"
 
 #include <iostream>
-#include <stdlib.h>
 #include "../fileHandling/fileHandler.h"
 #include "../parserHandling/parserHandler.h"
 #include "../semanticActionHandling/semanticActionHandler.h"
@@ -31,14 +30,14 @@ void applicationError::atExitFunction(void) {
 	system("pause");
 }
 
-void applicationError::raiseError() {
+void applicationError::raiseError() const {
 	std::cout << std::endl << "Fatal. Compilation aborted." << std::endl;
 	files->resetOutputFile();
 	atExitFunction();
 	std::exit(EXIT_FAILURE);
 }
 
-void applicationError::raiseError(std::string severity, std::string message, bool abort) {
+void applicationError::raiseError(const std::string &severity, const std::string &message, bool abort) const {
 	// print error or warning if configured
 	if (severity == "Fatal" && files->getConfigLine("printErrors") == "true" ||
 		severity == "Warning" && files->getConfigLine("printWarnings") == "true") {

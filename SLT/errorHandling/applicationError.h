@@ -20,10 +20,10 @@ public:
 	// raise unspecific error that leads to abortion of program
 	// error message is provided by user; application gets stopped safely
 	// should only be used in constructor of fileHandler, as no config statements are accessible
-	void raiseError();
+	void raiseError() const;
 
 	// raise locationally unspecific error with severity (fatal or warning) and message
-	void raiseError(std::string severity, std::string message, bool abort = true);
+	void raiseError(const std::string &severity, const std::string &message, bool abort = true) const;
 
 private: // hidden constructor && destructor
 	static applicationError *instance;

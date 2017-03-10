@@ -12,16 +12,16 @@ typedef std::vector<attrGrammarPtr> attrGrammarPtrVec;
 
 class attrGrammarType final {
 public:
-	attrGrammarType(std::string name, std::string type);
+	attrGrammarType(const std::string &name, const std::string &type);
 	virtual ~attrGrammarType() = default;
 
 	//getter methods
-	std::string getName();
-	std::string getType();
-	std::shared_ptr<attrGrammarPtrVec> getGrammar();
+	std::string getName() const;
+	std::string getType() const;
+	std::shared_ptr<attrGrammarPtrVec> getGrammar() const;
 
-	// temporary method to print components of class
-	void print();
+	// method to print components of class
+	void print() const;
 
 private:
 	std::string name {"<no_name>"};
@@ -34,15 +34,15 @@ typedef std::vector<attrGrammarType> parsingStruct;
 // typedefs for rulesStruct
 class rulesType final {
 public:
-	rulesType(std::string name, std::string mnemonic);
+	rulesType(const std::string &name, const std::string &mnemonic);
 	virtual ~rulesType() = default;
 
 	// getter and setter methods
-	std::string getName();
-	std::string getMnemonic();
+	std::string getName() const;
+	std::string getMnemonic() const;
 
 	// temporary method to print components of class
-	void print();
+	void print() const;
 
 private:
 	std::string name {"<no_name>"};
