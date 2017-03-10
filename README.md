@@ -23,18 +23,21 @@ Simply, execute SLT.exe in the same folder as the other files and an output file
 In case of a fatal error or warning - depending on the configuration - the transformation will be aborted and an error message displayed.
 
 ## Development ##
-This project is still in active development and features are currently limited.
+This project is still in active development and basic features are fully implemented.
 
 ### Planned and in-dev Features ###
-In next release:
+This release:
 - [x] Modify program that in- and output files can be in separate directories
 - [x] Write defined header to output file
 - [x] Parse input file
 - [x] Use semantic actions to transform and write to output file
+- [x] Recognize umlauts and the sharp s in input and output files
+- [x] Implement semantic actions based on configuration rules
 
 in-def features:
-- [ ] Recognize umlauts and the sharp s
-- [ ] Implement semantic actions based on configuration rules
+- [ ] Read umlauts and the sharp s from the terminal
+- [ ] Reorder attribute grammar based on offset in configuration file
+- [ ] Think about a graphical user interface
 
 The current codebase can be found on
 [GitHub](https://github.com/mysliwietzflorian/StockListTransformation).
