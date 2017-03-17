@@ -253,6 +253,13 @@ void semanticAction::insertArticleNr(std::string element) {
 		return;
 	}
 
+	// if element is empty, check integrity condition of column 03 and return
+	if (element.find_first_not_of(' ') == -1) {
+		element = prepareToWriteVec[2];
+		prepareToWriteVec[2] = checkIntegrityCondition(element, 18, 'A', "Teil");
+		return;
+	}
+
 	// write column 17 to 07
 	if (element.find_first_not_of(' ') != -1) {
 		element = checkIntegrityCondition(element, 12, 'A', "Lieferant");
